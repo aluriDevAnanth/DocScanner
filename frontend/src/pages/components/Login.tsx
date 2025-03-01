@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import AuthCon from "../../context/AuthPro";
 
 export default function Login({ open, setOpen }) {
-  const { user, auth, setAuth } = React.useContext(AuthCon);
+  const { setAuth } = React.useContext(AuthCon);
   const [stage, setStage] = React.useState(1);
   const [error, setError] = React.useState("");
 

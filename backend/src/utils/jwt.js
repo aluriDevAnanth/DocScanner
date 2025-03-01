@@ -5,31 +5,49 @@ function base64UrlEncode(buffer) {
 }
 
 export function generateJWT(payload, secret) {
-  const header = { alg: "HS256", typ: "JWT" };
+  try {
+    const header = { alg: "HS256", typ: "JWT" };
 
-  const encodedHeader = base64UrlEncode(Buffer.from(JSON.stringify(header)));
-  const encodedPayload = base64UrlEncode(Buffer.from(JSON.stringify(payload)));
+    const encodedHeader = base64UrlEncode(Buffer.from(JSON.stringify(header)));
+    const encodedPayload = base64UrlEncode(
+      Buffer.from(JSON.stringify(payload))
+    );
 
-  const data = `${encodedHeader}.${encodedPayload}`;
+    const data = `${encodedHeader}.${encodedPayload}`;
 
-  const signature = crypto
-    .createHmac("sha256", secret)
-    .update(data)
-    .digest("base64url");
+    const signature = crypto
+      .createHmac("sha256", secret)
+      .update(data)
+      .digest("base64url");
 
-  return `${data}.${signature}`;
+    return `${data}.${signature}`;
+  } catch (error) {
+    console.error("Error generating JWT:", error.message);
+    throw new Error("Failed to generate JWT");
+  }
 }
 
 export function verifyJWT(token, secret) {
-  const [header, payload, signature] = token.split(".");
+  try {
+    const [header, payload, signature] = token.split(".");
 
-  const data = `${header}.${payload}`;
-  const expectedSignature = crypto
-    .createHmac("sha256", secret)
-    .update(data)
-    .digest("base64url");
+    if (!header || !payload || !signature) {
+      throw new Error("Invalid token format");
+    }
 
-  return expectedSignature === signature
-    ? JSON.parse(Buffer.from(payload, "base64url").toString())
-    : null;
+    const data = `${header}.${payload}`;
+    const expectedSignature = crypto
+      .createHmac("sha256", secret)
+      .update(data)
+      .digest("base64url");
+
+    if (expectedSignature !== signature) {
+      throw new Error("Invalid token signature");
+    }
+
+    return JSON.parse(Buffer.from(payload, "base64url").toString());
+  } catch (error) {
+    console.error("Error verifying JWT:", error.message);
+    throw new Error("Failed to generate JWT");
+  }
 }

@@ -21,7 +21,7 @@ export default function Header() {
   async function logout() {
     try {
       localStorage.removeItem("DST");
-      setAuth(null);
+      setAuth("");
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -50,11 +50,23 @@ export default function Header() {
           <li>
             <Link
               to="/"
+              aria-disabled={window.location.pathname == "/"}
               className={`nav-link px-2 ${
-                window.location.pathname == "/" && `link-secondary`
+                window.location.pathname == "/" ? "link-secondary" : ""
               }`}
             >
               Home
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/credits"
+              aria-disabled={window.location.pathname == "/credits"}
+              className={`nav-link px-2 ${
+                window.location.pathname == "/credits" ? "link-secondary" : ""
+              }`}
+            >
+              Credits
             </Link>
           </li>
         </ul>

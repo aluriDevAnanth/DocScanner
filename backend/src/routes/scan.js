@@ -192,22 +192,4 @@ router.get("/matches/:docId", (req, res) => {
   });
 });
 
-router.post("/credits/request", (req, res) => {
-  const username = req.body.username;
-  const reqCredits = req.body.requested_credits;
-
-  if (!username || !reqCredits) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  db.prepare(
-    "INSERT INTO credit_requests (username, requested_credits ) VALUES (?, ?)"
-  ).run(username, reqCredits);
-
-  res.json({
-    message: "Request for credits sent successfully",
-    data: { username, reqCredits },
-  });
-});
-
 export default router;

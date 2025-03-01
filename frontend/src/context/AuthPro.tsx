@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 
 interface AuthContextType {
-  user: string | null;
+  user: any;
   auth: string | null;
   setAuth: React.Dispatch<React.SetStateAction<string>>;
   setUser: React.Dispatch<React.SetStateAction<any>>;
@@ -31,7 +31,6 @@ export function AuthPro({ children }: AuthProProps) {
             headers: { Authorization: `Bearer ${auth}` },
           })
         ).json();
-        console.log(res.data.user);
 
         setUser(res.data.user);
       })();

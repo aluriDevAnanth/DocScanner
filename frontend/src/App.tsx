@@ -2,18 +2,18 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import NotFound from "./pages/NotFound.tsx";
 import Home from "./pages/Home.tsx";
 import { AuthPro } from "./context/AuthPro.tsx";
+import Credits from "./pages/Credits.tsx";
+import CreditsLoader from "./pages/loaders/credits.tsx";
 
 const router = createBrowserRouter([
+  { path: "/", element: <Home /> },
   {
-    path: "/",
-    element: <Home />,
-    /* children: [
-      { index: true, element: <Home /> },
-      { path: "about", element: <About /> },
-      { path: "contact", element: <Contact /> },
-    ], */
+    path: "/credits",
+    element: <Credits />,
+    loader: CreditsLoader,
+    hydrateFallbackElement: <></>,
   },
-  { path: "*", element: <NotFound /> }, // Catch-all 404 page
+  { path: "*", element: <NotFound /> },
 ]);
 function App() {
   return (
