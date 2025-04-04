@@ -53,22 +53,30 @@ router.put("/eval_credit_request", authTokenValidation, (req, res, next) => {
   try {
     const { evalCR, req_id } = req.body;
 
-    const credit_requests = db
-      .prepare(`update credit_requests where id = ? set status = ? `)
-      .run(req_id, evalCR);
+    const credit_request = db
+      .prepare(
+        `UPDATE credit_requests SET status = ? WHERE id = ? RETURNING *;`
+      )
+      .get(evalCR, req_id);
 
-    const user = null;
+    console.log(111, credit_request);
 
-    if (evalCR == "approved") {
+    let user = null;
+
+    if (evalCR == "approved" && ) {
       user = db
-        .prepare(`update users where username = ? set status = status + ? `)
-        .run(req.user.username, evalCR);
+        .prepare(
+          `UPDATE users SET credits = credits + ? WHERE username = ? RETURNING *;`
+        )
+        .get(credit_request.requested_credits, req.user.username);
+    } else {
+      user = req.user;
     }
 
     return res.status(200).json({
       success: true,
       message: "These are your past requests",
-      data: { user, credit_requests },
+      data: { user, credit_request },
     });
   } catch (error) {
     next(error);
